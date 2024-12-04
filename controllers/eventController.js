@@ -46,6 +46,7 @@ const createEvent = async (req, res) => {
     //create a new event
     const newEvent = new EVENT({
       image: uploadedImage.secure_url,
+      title,
       date,
       startTime,
       endTime,
