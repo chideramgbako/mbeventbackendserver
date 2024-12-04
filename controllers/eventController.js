@@ -52,7 +52,7 @@ const createEvent = async (req, res) => {
       description,
       category,
       location: online === "true" ? "online" : location,
-      tags,
+      tags: Array.isArray(tags) ? tags : tags.split(","),
       price: {
         free: free === "true",
         regular: free === "true" ? 0 : req.body?.regularPrice,
@@ -60,20 +60,48 @@ const createEvent = async (req, res) => {
       },
       hostedBy: userId,
     });
-    
-    const event = await newEvent.save()
-    res.status(201).json({success: true, event})
-    
+
+    const event = await newEvent.save();
+    res.status(201).json({ success: true, event });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
 
 const getUpcomingEvents = async (req, res) => {
-  res.send("get upcoimg events");
+  try {
+    const currentDate = new Date();
+    //finds the date is in the future or today
+    const upcomingEvents = await EVENT.find({ date: { $gte: currentDate } })
+      .sort("date") //sort by date ascending order
+      .limit(6)
+      .populate("hostedBy", "fullName"); //limit the number of event to 4
+    res.status(200).json({ success: true, events: upcomingEvents });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
 };
 const getFreeEvents = async (req, res) => {
-  res.send("get free events");
+  try {
+    const currentDate = new Date();
+    const freeEvents = await EVENT.find({
+      date: { $gte: currentDate },
+      "price.free": true,
+    })
+      .sort("date")
+      .limit(6);
+    res.status(200).json({ success: true, events: freeEvents });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
 };
 
-module.exports = { createEvent, getUpcomingEvents, getFreeEvents };
+const getSingleEvent = async () => {
+  res.send("get single events");
+};
+module.exports = {
+  createEvent,
+  getUpcomingEvents,
+  getFreeEvents,
+  getSingleEvent,
+};

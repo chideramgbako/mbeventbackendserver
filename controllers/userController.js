@@ -6,9 +6,10 @@ const {
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+//jonwebtoken 
 const generateToken = ({ userId, email }) => {
   const token = jwt.sign({ userId, email }, process.env.JWT_SECRET, {
-    expiresIn: "1h",
+    expiresIn: "1d",
   });
   return token;
 };
