@@ -55,7 +55,8 @@ const createEvent = async (req, res) => {
       tags,
       price: {
         free: free === "true",
-        regular: free === "true" ? 0 : req.body?.vipPrice,
+        regular: free === "true" ? 0 : req.body?.regularPrice,
+        vip: free === "true" ? 0 : req.body?.vipPrice,
       },
       hostedBy: userId,
     });
@@ -64,7 +65,7 @@ const createEvent = async (req, res) => {
     res.status(201).json({success: true, event})
     
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
